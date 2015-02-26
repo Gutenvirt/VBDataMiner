@@ -1,4 +1,8 @@
-﻿Option Explicit On
+﻿'2015 Chris Stefancik'
+'Please keep this header when distributing, modifying, or compiling the code'
+'gutenvirt@gmail.com for more information'
+
+Option Explicit On
 
 Imports System.IO
 

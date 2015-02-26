@@ -1,4 +1,9 @@
-﻿Imports System.Data
+﻿'2015 Chris Stefancik'
+'Please keep this header when distributing, modifying, or compiling the code'
+'gutenvirt@gmail.com for more information'
+
+
+Imports System.Data
 Imports System.Data.DataSet
 Imports System.IO
 
