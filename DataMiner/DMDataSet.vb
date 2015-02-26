@@ -1,6 +1,6 @@
 ﻿'2015 Chris Stefancik'
 'Please keep this header when distributing, modifying, or compiling the code'
-'gutenvirt@gmail.com for more information'
+'gutenvirt@gmail.com for more information' 
 
 
 Imports System.Data
