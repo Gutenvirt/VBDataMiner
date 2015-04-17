@@ -65,6 +65,7 @@ Public Class DMDataSet
     Dim hasCR As Boolean = False
 
     Dim stuPercentScores() As Double
+    Dim aLowHigh(,,) As Integer
 
 
     Public Sub Initialize(ByVal DatabaseFile As String)
@@ -262,6 +263,8 @@ Public Class DMDataSet
 
     Public Sub GetMCFrequencies()
 
+        ReDim aLowHigh(nNumberColumns, 3, 4)
+
         For i = 0 To nNumberColumns - 1
             For j = 0 To nNumberRows - 1
                 If itemStrData(i, StrData.Type) <> "MC" Then Exit For
@@ -270,12 +273,24 @@ Public Class DMDataSet
                     Select Case _ddata.Rows(j).Item(i).ToString.Replace("+", "")
                         Case "A", "F"
                             ItemIntData(i, IntData.MC1) += 1
+                            If stuPercentScores(j) < 33 Then aLowHigh(i, 0, 0) += 1
+                            If stuPercentScores(j) >= 33 And stuPercentScores(j) < 66 Then aLowHigh(i, 1, 0) += 1
+                            If stuPercentScores(j) >= 66 Then aLowHigh(i, 2, 0) += 1
                         Case "B", "G"
                             ItemIntData(i, IntData.MC2) += 1
+                            If stuPercentScores(j) < 33 Then aLowHigh(i, 0, 1) += 1
+                            If stuPercentScores(j) >= 33 And stuPercentScores(j) < 66 Then aLowHigh(i, 1, 1) += 1
+                            If stuPercentScores(j) >= 66 Then aLowHigh(i, 2, 1) += 1
                         Case "C", "H"
                             ItemIntData(i, IntData.MC3) += 1
+                            If stuPercentScores(j) < 33 Then aLowHigh(i, 0, 2) += 1
+                            If stuPercentScores(j) >= 33 And stuPercentScores(j) < 66 Then aLowHigh(i, 1, 2) += 1
+                            If stuPercentScores(j) >= 66 Then aLowHigh(i, 2, 2) += 1
                         Case "D", "J"
                             ItemIntData(i, IntData.MC4) += 1
+                            If stuPercentScores(j) < 33 Then aLowHigh(i, 0, 3) += 1
+                            If stuPercentScores(j) >= 33 And stuPercentScores(j) < 66 Then aLowHigh(i, 1, 3) += 1
+                            If stuPercentScores(j) >= 66 Then aLowHigh(i, 2, 3) += 1
                     End Select
                 End If
             Next
@@ -757,6 +772,26 @@ Public Class DMDataSet
             strHTML &= "</table>"
             strHTML &= "<p></p>"
         End If
+
+        If True Then
+            strHTML &= "<table>"
+            For i = 0 To nNumberColumns - 1
+
+                Dim _sum As Double = 1 '(aLowHigh(i, 0, 0) + aLowHigh(i, 1, 0) + aLowHigh(i, 2, 0) _
+                '+ aLowHigh(i, 0, 1) + aLowHigh(i, 1, 1) + aLowHigh(i, 2, 1) _
+                '+ aLowHigh(i, 0, 2) + aLowHigh(i, 1, 2) + aLowHigh(i, 2, 2) _
+                '+ aLowHigh(i, 0, 3) + aLowHigh(i, 1, 3) + aLowHigh(i, 2, 3)) / 100
+
+                strHTML &= "<tr><th>Item " & i + 1 & " Choice</th><th>Lower 1/3</th><th>Middle 1/3</th><th>Upper 1/3</th></tr>"
+                strHTML &= "<tr><td>A</th><td>" & (aLowHigh(i, 0, 0) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 1, 0) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 2, 0) / _sum).ToString("0.00") & "</th></tr>"
+                strHTML &= "<tr><td>B</th><td>" & (aLowHigh(i, 0, 1) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 1, 1) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 2, 1) / _sum).ToString("0.00") & "</th></tr>"
+                strHTML &= "<tr><td>C</th><td>" & (aLowHigh(i, 0, 2) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 1, 2) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 2, 2) / _sum).ToString("0.00") & "</th></tr>"
+                strHTML &= "<tr><td>D</th><td>" & (aLowHigh(i, 0, 3) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 1, 3) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 2, 3) / _sum).ToString("0.00") & "</th></tr>"
+            Next
+            strHTML &= "</table>"
+            strHTML &= "<p></p>"
+        End If
+
 
         'References Section
 
