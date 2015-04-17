@@ -98,9 +98,9 @@ Public Class DMDataSet
 
         sTestName = _ddata.Rows(0).Item(6).ToString
 
-        ReDim stuPercentScores(_ddata.Rows.Count)
-        For i = FIRST_ROW_LOC + 1 To _ddata.Rows.Count - 1
-            Double.TryParse(_ddata.Rows(i).Item(_ddata.Columns.Count - 4).ToString().Replace("%", ""), stuPercentScores(i))
+        ReDim stuPercentScores(_ddata.Rows.Count - FIRST_ROW_LOC)
+        For i = FIRST_ROW_LOC To _ddata.Rows.Count - 1
+            Double.TryParse(_ddata.Rows(i).Item(_ddata.Columns.Count - 4).ToString().Replace("%", ""), stuPercentScores(i - FIRST_ROW_LOC))
         Next
 
         _x = 0
@@ -268,7 +268,6 @@ Public Class DMDataSet
         For i = 0 To nNumberColumns - 1
             For j = 0 To nNumberRows - 1
                 If itemStrData(i, StrData.Type) <> "MC" Then Exit For
-
                 If Not _ddata.Rows(j).Item(i) Is Nothing Then
                     Select Case _ddata.Rows(j).Item(i).ToString.Replace("+", "")
                         Case "A", "F"
@@ -777,16 +776,15 @@ Public Class DMDataSet
             strHTML &= "<table>"
             For i = 0 To nNumberColumns - 1
 
-                Dim _sum As Double = 1 '(aLowHigh(i, 0, 0) + aLowHigh(i, 1, 0) + aLowHigh(i, 2, 0) _
-                '+ aLowHigh(i, 0, 1) + aLowHigh(i, 1, 1) + aLowHigh(i, 2, 1) _
-                '+ aLowHigh(i, 0, 2) + aLowHigh(i, 1, 2) + aLowHigh(i, 2, 2) _
-                '+ aLowHigh(i, 0, 3) + aLowHigh(i, 1, 3) + aLowHigh(i, 2, 3)) / 100
+                Dim _lsum As Double = aLowHigh(i, 0, 0) + aLowHigh(i, 0, 1) + aLowHigh(i, 0, 2) + aLowHigh(i, 0, 3)
+                Dim _msum As Double = aLowHigh(i, 1, 0) + aLowHigh(i, 1, 1) + aLowHigh(i, 1, 2) + aLowHigh(i, 1, 3)
+                Dim _hsum As Double = aLowHigh(i, 2, 0) + aLowHigh(i, 2, 1) + aLowHigh(i, 2, 2) + aLowHigh(i, 2, 3)
 
                 strHTML &= "<tr><th>Item " & i + 1 & " Choice</th><th>Lower 1/3</th><th>Middle 1/3</th><th>Upper 1/3</th></tr>"
-                strHTML &= "<tr><td>A</th><td>" & (aLowHigh(i, 0, 0) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 1, 0) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 2, 0) / _sum).ToString("0.00") & "</th></tr>"
-                strHTML &= "<tr><td>B</th><td>" & (aLowHigh(i, 0, 1) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 1, 1) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 2, 1) / _sum).ToString("0.00") & "</th></tr>"
-                strHTML &= "<tr><td>C</th><td>" & (aLowHigh(i, 0, 2) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 1, 2) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 2, 2) / _sum).ToString("0.00") & "</th></tr>"
-                strHTML &= "<tr><td>D</th><td>" & (aLowHigh(i, 0, 3) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 1, 3) / _sum).ToString("0.00") & "</th><td>" & (aLowHigh(i, 2, 3) / _sum).ToString("0.00") & "</th></tr>"
+                strHTML &= "<tr><td>A</th><td>" & (aLowHigh(i, 0, 0) / _lsum * 100).ToString("0.00") & "</th><td>" & (aLowHigh(i, 1, 0) / _msum * 100).ToString("0.00") & "</th><td>" & (aLowHigh(i, 2, 0) / _hsum * 100).ToString("0.00") & "</th></tr>"
+                strHTML &= "<tr><td>B</th><td>" & (aLowHigh(i, 0, 1) / _lsum * 100).ToString("0.00") & "</th><td>" & (aLowHigh(i, 1, 1) / _msum * 100).ToString("0.00") & "</th><td>" & (aLowHigh(i, 2, 1) / _hsum * 100).ToString("0.00") & "</th></tr>"
+                strHTML &= "<tr><td>C</th><td>" & (aLowHigh(i, 0, 2) / _lsum * 100).ToString("0.00") & "</th><td>" & (aLowHigh(i, 1, 2) / _msum * 100).ToString("0.00") & "</th><td>" & (aLowHigh(i, 2, 2) / _hsum * 100).ToString("0.00") & "</th></tr>"
+                strHTML &= "<tr><td>D</th><td>" & (aLowHigh(i, 0, 3) / _lsum * 100).ToString("0.00") & "</th><td>" & (aLowHigh(i, 1, 3) / _msum * 100).ToString("0.00") & "</th><td>" & (aLowHigh(i, 2, 3) / _hsum * 100).ToString("0.00") & "</th></tr>"
             Next
             strHTML &= "</table>"
             strHTML &= "<p></p>"
