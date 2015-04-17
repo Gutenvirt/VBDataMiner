@@ -64,6 +64,8 @@ Public Class DMDataSet
     Dim hasGR As Boolean = False
     Dim hasCR As Boolean = False
 
+    Dim stuPercentScores() As Double
+
 
     Public Sub Initialize(ByVal DatabaseFile As String)
         sTime.Start()
@@ -94,6 +96,11 @@ Public Class DMDataSet
         End If
 
         sTestName = _ddata.Rows(0).Item(6).ToString
+
+        ReDim stuPercentScores(_ddata.Rows.Count)
+        For i = FIRST_ROW_LOC + 1 To _ddata.Rows.Count - 1
+            Double.TryParse(_ddata.Rows(i).Item(_ddata.Columns.Count - 4).ToString().Replace("%", ""), stuPercentScores(i))
+        Next
 
         _x = 0
         While _x < FIRST_COL_LOC
@@ -473,9 +480,9 @@ Public Class DMDataSet
 
         Dim _s As Double
 
-        For m = 0 To StudentScores.Length - 1
+        For m = 0 To stuPercentScores.Length - 1
 
-            _s = StudentScores(m) / nNumberColumns
+            _s = stuPercentScores(m) / 100
 
             If _s < 0.1 Then StuRawScoreBins(0) += 1
             If _s >= 0.1 And _s < 0.2 Then StuRawScoreBins(1) += 1
@@ -643,7 +650,7 @@ Public Class DMDataSet
 
                     strHTML &= "<td>" & ItemDblData(_a, DblData.AIfD).ToString("0.00") & "</td>"
                     strHTML &= "<td class=""center"">" & itemStrData(_a, StrData.Answer) & "</td>"
-                    strHTML &= "<td>" & Math.Round(ItemIntData(_a, IntData.MC1) / nNumberRows * 100, 0) & "</td>"
+                    strHTML &= "<td>" & Math.Round(ItemIntData(_a, IntData.MC1) / nNumberRows * 10, 2) & "</td>"
                     strHTML &= "<td>" & Math.Round(ItemIntData(_a, IntData.MC2) / nNumberRows * 100, 0) & "</td>"
                     strHTML &= "<td>" & Math.Round(ItemIntData(_a, IntData.MC3) / nNumberRows * 100, 0) & "</td>"
                     strHTML &= "<td>" & Math.Round(ItemIntData(_a, IntData.MC4) / nNumberRows * 100, 0) & "</td>"
